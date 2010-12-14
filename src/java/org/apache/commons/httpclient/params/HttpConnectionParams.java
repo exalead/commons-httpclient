@@ -105,6 +105,16 @@ public class HttpConnectionParams extends DefaultHttpParams {
      * @see java.net.SocketOptions#SO_LINGER
      */
     public static final String SO_LINGER = "http.socket.linger"; 
+    
+    /**
+     * Sets SO_KEEPALIVE (TCP Keepalive) on the socket. Default value is true.
+     */
+    public static final String SO_KEEPALIVE = "http.socket.keepalive";
+    
+    /**
+     * Sets SO_REUSEADDR on the socket. Default value is true.
+     */
+    public static final String SO_REUSEADDR = "http.socket.reuseaddr";
 
     /**
      * Determines the timeout until a connection is etablished. A value of zero 
@@ -184,6 +194,34 @@ public class HttpConnectionParams extends DefaultHttpParams {
      */
     public boolean getTcpNoDelay() {
         return getBooleanParameter(TCP_NODELAY, true);
+    }
+    
+    /**
+     * Determines whether TCP keep alive is to be used.
+     */
+    public void setTcpKeepAlive(boolean value) {
+        setBooleanParameter(SO_KEEPALIVE, value);
+    }
+
+    /**
+     * Tests if TCP keep-alive is to be used.
+     */
+    public boolean getTcpKeepAlive() {
+        return getBooleanParameter(SO_KEEPALIVE, true);
+    }
+    
+    /**
+     * Determines whether socket address reuse is to be used.
+     */
+    public void setReuseAddress(boolean value) {
+        setBooleanParameter(SO_REUSEADDR, value);
+    }
+
+    /**
+     * Tests if socket address reuse is to be used.
+     */
+    public boolean getReuseAddress() {
+        return getBooleanParameter(SO_REUSEADDR, true);
     }
 
     /**

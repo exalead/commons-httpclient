@@ -720,6 +720,8 @@ public class HttpConnection {
 
             socket.setTcpNoDelay(this.params.getTcpNoDelay());
             socket.setSoTimeout(this.params.getSoTimeout());
+            socket.setReuseAddress(this.params.getReuseAddress());
+            socket.setKeepAlive(this.params.getTcpKeepAlive());
             
             int linger = this.params.getLinger();
             if (linger >= 0) {
