@@ -225,7 +225,7 @@ public class HttpConnection {
      * 
      * @since 3.0
      */
-    protected Socket getSocket() {
+    public Socket getSocket() {
         return this.socket;
     }
 
