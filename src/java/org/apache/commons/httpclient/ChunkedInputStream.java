@@ -79,6 +79,13 @@ public class ChunkedInputStream extends InputStream {
 
     /** True if this stream is closed */
     private boolean closed = false;
+    
+    /** State of reading CRLF at end of chunk */
+    private boolean cr, lf;
+    
+    /** State of the chunk size reading */
+    private int state = 0;
+    private ByteArrayOutputStream baos = new ByteArrayOutputStream(16);
 
     /** The method that this stream came from */
     private HttpMethod method = null;
@@ -201,11 +208,21 @@ public class ChunkedInputStream extends InputStream {
      * @throws IOException If an IO error occurs.
      */
     private void readCRLF() throws IOException {
-        int cr = in.read();
-        int lf = in.read();
-        if ((cr != '\r') || (lf != '\n')) { 
-            throw new IOException(
-                "CRLF expected at end of chunk: " + cr + "/" + lf);
+        if (!cr) {
+            int read = in.read();
+            if (read != '\r') {
+                throw new IOException(
+                    "[CR]LF expected at end of chunk: " + read);
+            }
+            cr = true;
+        }
+        if (!lf) {
+            int read = in.read();
+            if (read != '\n') {
+                throw new IOException(
+                    "CR[LF] expected at end of chunk: " + read);
+            }
+            lf = true;
         }
     }
 
@@ -218,7 +235,11 @@ public class ChunkedInputStream extends InputStream {
         if (!bof) {
             readCRLF();
         }
-        chunkSize = getChunkSizeFromInputStream(in);
+        chunkSize = getChunkSizeFromInputStream();
+        cr = false;
+        lf = false;
+        state = 0;
+        baos.reset();
         bof = false;
         pos = 0;
         if (chunkSize == 0) {
@@ -240,12 +261,10 @@ public class ChunkedInputStream extends InputStream {
      * 
      * @throws IOException when the chunk size could not be parsed
      */
-    private static int getChunkSizeFromInputStream(final InputStream in) 
+    private int getChunkSizeFromInputStream() 
       throws IOException {
-            
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        
         // States: 0=normal, 1=\r was scanned, 2=inside quoted string, -1=end
-        int state = 0; 
         while (state != -1) {
         int b = in.read();
             if (b == -1) { 
