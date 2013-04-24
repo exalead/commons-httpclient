@@ -80,6 +80,9 @@
   <!-- Should Java compilations set the 'deprecation' compiler option? -->
   <property name="compile.deprecation"     value="true"/>
 
+  <!-- Javac target version -->
+  <property name="compile.target"          value="1.5"/>
+
   <!-- Should Java compilations set the 'optimize' compiler option? -->
   <property name="compile.optimize"        value="true"/>
 
@@ -181,6 +184,7 @@
            destdir     ="${build.home}/classes"
            debug       ="${compile.debug}"
            deprecation ="${compile.deprecation}"
+           target      ="${compile.target}"
            optimize    ="${compile.optimize}">
       <classpath refid="compile.classpath"/>
     </javac>
@@ -188,6 +192,7 @@
            destdir     ="${build.home}/examples"
            debug       ="${compile.debug}"
            deprecation ="${compile.deprecation}"
+           target      ="${compile.target}"
            optimize    ="${compile.optimize}">
       <classpath refid="compile.classpath"/>
     </javac>
@@ -199,6 +204,7 @@
            destdir     ="${build.home}/tests"
            debug       ="${compile.debug}"
            deprecation ="${compile.deprecation}"
+           target      ="${compile.target}"
            optimize    ="${compile.optimize}">
       <classpath refid="test.classpath"/>
     </javac>
